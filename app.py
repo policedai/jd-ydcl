@@ -203,50 +203,54 @@ def analyze_content(text):
         return json.dumps({})
 
 # ==========================================
-# 4. UI 界面（核心修改：删除重新分析按钮）
+# 4. UI 界面
 # ==========================================
 st.set_page_config(page_title="北京中学生英语阅读智能解析", layout="wide")
 
-# --- 新增：登录验证逻辑 ---
+# --- 登录验证逻辑 ---
 def check_password():
     """验证成功返回 True，否则显示输入框并返回 False"""
     def password_entered():
-        if st.session_state["password"] == st.secrets["APP_PASSWORD"]:
+        if st.session_state["password"] == st.secrets.get("APP_PASSWORD", "123456"):
             st.session_state["password_correct"] = True
             del st.session_state["password"]  # 验证后删除，更安全
         else:
             st.session_state["password_correct"] = False
 
     if "password_correct" not in st.session_state:
-        # 还没输入过密码
-        st.title("🔐 访问受限")
-        st.text_input("请输入访问密码", type="password", on_change=password_entered, key="password")
+        # 初次访问
+        st.markdown("<h1 style='text-align: center;'>🔐 访问受限</h1>", unsafe_allow_html=True)
+        col1, col2, col3 = st.columns([1, 2, 1])
+        with col2:
+            st.text_input("请输入内部访问密码", type="password", on_change=password_entered, key="password")
+            st.info("💡 提示：请联系管理员获取密码")
         return False
     elif not st.session_state["password_correct"]:
         # 密码错误
-        st.title("🔐 访问受限")
-        st.text_input("请输入访问密码", type="password", on_change=password_entered, key="password")
-        st.error("❌ 密码错误，请重新输入")
+        st.markdown("<h1 style='text-align: center;'>🔐 访问受限</h1>", unsafe_allow_html=True)
+        col1, col2, col3 = st.columns([1, 2, 1])
+        with col2:
+            st.text_input("请输入内部访问密码", type="password", on_change=password_entered, key="password")
+            st.error("❌ 密码错误，请重新输入")
         return False
     else:
         # 密码正确
         return True
 
-# 只有验证通过才执行后面的代码
+# --- 核心业务逻辑（仅在验证通过后显示） ---
 if check_password():
-
-# CSS 优化
-st.markdown("""
-    <style>
-    .stRadio [role=radiogroup] { spacing: 0px; }
-    .stRadio label { padding: 5px 10px; border-radius: 4px; margin-bottom: 2px; }
-    .phrase-tag { background: #e3f2fd; padding: 2px 8px; border-radius: 4px; margin: 3px; display: inline-block; color: #1565c0; font-size: 13px; font-weight: 500; }
-    .article-box { border: 1px solid #eee; padding: 15px; background: white; border-radius: 8px; height: 500px; overflow-y: auto; font-family: 'Times New Roman', serif; font-size: 16px; line-height: 1.6; }
-    .word-card { background: #f9f9f9; border-left: 3px solid #1565c0; padding: 8px; margin-bottom: 5px; border-radius: 4px; font-size: 14px; }
-    .streamlit-expanderHeader { white-space: normal !important; width: 100% !important; }
-    .stButton > button { margin-bottom: 5px; }
-    </style>
-""", unsafe_allow_html=True)
+    # CSS 样式注入
+    st.markdown("""
+        <style>
+        .stRadio [role=radiogroup] { spacing: 0px; }
+        .stRadio label { padding: 5px 10px; border-radius: 4px; margin-bottom: 2px; }
+        .phrase-tag { background: #e3f2fd; padding: 2px 8px; border-radius: 4px; margin: 3px; display: inline-block; color: #1565c0; font-size: 13px; font-weight: 500; }
+        .article-box { border: 1px solid #eee; padding: 15px; background: white; border-radius: 8px; height: 500px; overflow-y: auto; font-family: 'Times New Roman', serif; font-size: 16px; line-height: 1.6; }
+        .word-card { background: #f9f9f9; border-left: 3px solid #1565c0; padding: 8px; margin-bottom: 5px; border-radius: 4px; font-size: 14px; }
+        .streamlit-expanderHeader { white-space: normal !important; width: 100% !important; }
+        .stButton > button { margin-bottom: 5px; }
+        </style>
+    """, unsafe_allow_html=True)
 
 # 初始化session_state
 if 'db' not in st.session_state:
@@ -419,6 +423,7 @@ with tab_add:
 # 重置按钮加载状态
 
 st.session_state.btn_loading = False
+
 
 
 
