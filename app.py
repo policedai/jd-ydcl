@@ -207,6 +207,34 @@ def analyze_content(text):
 # ==========================================
 st.set_page_config(page_title="北京中学生英语阅读智能解析", layout="wide")
 
+# --- 新增：登录验证逻辑 ---
+def check_password():
+    """验证成功返回 True，否则显示输入框并返回 False"""
+    def password_entered():
+        if st.session_state["password"] == st.secrets["APP_PASSWORD"]:
+            st.session_state["password_correct"] = True
+            del st.session_state["password"]  # 验证后删除，更安全
+        else:
+            st.session_state["password_correct"] = False
+
+    if "password_correct" not in st.session_state:
+        # 还没输入过密码
+        st.title("🔐 访问受限")
+        st.text_input("请输入访问密码", type="password", on_change=password_entered, key="password")
+        return False
+    elif not st.session_state["password_correct"]:
+        # 密码错误
+        st.title("🔐 访问受限")
+        st.text_input("请输入访问密码", type="password", on_change=password_entered, key="password")
+        st.error("❌ 密码错误，请重新输入")
+        return False
+    else:
+        # 密码正确
+        return True
+
+# 只有验证通过才执行后面的代码
+if check_password():
+
 # CSS 优化
 st.markdown("""
     <style>
@@ -391,5 +419,6 @@ with tab_add:
 # 重置按钮加载状态
 
 st.session_state.btn_loading = False
+
 
 
