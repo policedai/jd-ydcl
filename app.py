@@ -163,7 +163,7 @@ def analyze_content(text):
         return json.dumps({})
     try:
         client = OpenAI(api_key=DEEPSEEK_API_KEY, base_url=AI_BASE_URL)
-        # 丰富提示词：高考考生视角+纯中文+强制量化要求（单词≥8/短语≥5/长难句≥3）
+        # 丰富提示词：考生视角+纯中文+强制量化要求（单词≥8/短语≥5/长难句≥3）
         prompt = f"""
         请以北京中学生英语中高考考生的视角，对以下英语阅读文本进行全面解析，所有解析内容均使用中文，且严格满足以下量化要求：
         1. 重点难点单词：提取至少8个，包含【英文单词、国际音标、中文释义（结合阅读语境）】；
@@ -205,7 +205,7 @@ def analyze_content(text):
 # ==========================================
 # 4. UI 界面（核心修改：删除重新分析按钮）
 # ==========================================
-st.set_page_config(page_title="高考英语阅读智能解析", layout="wide")
+st.set_page_config(page_title="北京中学生英语阅读智能解析", layout="wide")
 
 # CSS 优化
 st.markdown("""
@@ -311,7 +311,7 @@ with tab_read:
                         st.warning("⚠️ 解析格式错误，建议重新录入原文")
 
             with c_right:
-                st.markdown("**🧠 高考视角深度解析**")
+                st.markdown("**🧠 考生视角深度解析**")
                 try:
                     ai_result = f.get('分析结果', '{}')
                     ans = json.loads(ai_result) if ai_result.strip() else {}
@@ -391,4 +391,5 @@ with tab_add:
 # 重置按钮加载状态
 
 st.session_state.btn_loading = False
+
 
