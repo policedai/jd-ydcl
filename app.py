@@ -9,13 +9,13 @@ from lark_oapi.api.bitable.v1 import *
 # ==========================================
 # 1. 核心配置（无需修改）
 # ==========================================
-FEISHU_APP_ID = "cli_a90e759661b89bcb"
-FEISHU_APP_SECRET = "6BI8rs60uXO2jXGAiADhBdsfhL46IMQf"
-FEISHU_APP_TOKEN = "SdUvb4swjaujfWsc8hacDUeInKx"
-FEISHU_TABLE_ID = "tblFUuMBM4zGKgi4"
+FEISHU_APP_ID = st.secrets["FEISHU_APP_ID"]
+FEISHU_APP_SECRET = st.secrets["FEISHU_APP_SECRET"]
+FEISHU_APP_TOKEN = st.secrets["FEISHU_APP_TOKEN"]
+FEISHU_TABLE_ID = st.secrets["FEISHU_TABLE_ID"]
 
 # AI配置
-DEEPSEEK_API_KEY = "sk-caba1c45374143c1800710ee9352fb7c"
+DEEPSEEK_API_KEY = st.secrets["DEEPSEEK_API_KEY"]
 AI_BASE_URL = "https://api.deepseek.com"
 
 # 全局调试开关
@@ -389,4 +389,5 @@ with tab_add:
                         st.rerun()
 
 # 重置按钮加载状态
+
 st.session_state.btn_loading = False
